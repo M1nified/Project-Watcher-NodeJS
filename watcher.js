@@ -43,7 +43,7 @@ class Watcher{
     console.log('WATCHING: ',f);
     this.watchers.push({file:f});
     this.fs.watchFile(f,function(curr,prev){
-      actionForFile(f);
+      actionForFile.call(this,f);
     }.bind(this))
   }
   constructor(settings){
