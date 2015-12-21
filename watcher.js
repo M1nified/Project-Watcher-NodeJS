@@ -25,7 +25,7 @@ class Watcher{
     this.babel.transformFile(f, this.settings.babel_options, function (err, result) {
       // result; // => { code, map, ast }
       if(err){
-        console.log(err);
+        console.log('\n',err,'\n');
         this.notifyErr(err);
       }else{
         this.fs.writeFile(this.settings.destination_path+f,result.code,{flag:'w+'},(err)=>{if(err)console.log(err);this.notifyErr(err);})

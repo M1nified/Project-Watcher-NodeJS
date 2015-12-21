@@ -22,10 +22,17 @@ var DEFAULT = {
       destination_path : '_PRODUCED',
       babel : [],
       babel_options : {},
-      copy : ["*"]
+      copy : ["*"],
+      options_file:'project-watcher-options.json'
     }
   }
 }
+//checking args
+var args = require('./ArgsParser.js');
+if(args.O || args.options){
+  DEFAULT.options_file = args.O || args.options;
+}
+//checking args END
 var w = null;
 function start(){
   try{
@@ -33,7 +40,7 @@ function start(){
   }catch(e){}
   var settings = DEFAULT.settings();
   try{
-    let options = JSON.parse(fs.readFileSync('project-watcher-options.json'));
+    let options = JSON.parse(fs.readFileSync(DEFAULT.options_file));
     for(let opt in options){
       settings[opt] = options[opt];
     }
@@ -43,6 +50,6 @@ function start(){
   w = new watcher.Watcher(settings);
 }
 start();
-fs.watchFile('project-watcher-options.json',(curr,prev)=>{
+fs.watchFile(DEFAULT.options_file,(curr,prev)=>{
   start();
 })
