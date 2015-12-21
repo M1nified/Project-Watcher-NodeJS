@@ -49,7 +49,9 @@ class Watcher{
   constructor(settings){
     this.watchers = [];
     this.settings = settings;
-    if(this.settings.module_path)module.paths.push(this.settings.module_path);
+    if(this.settings.module_path){
+      module.paths.push(this.settings.module_path);
+    }
     this.fs = require('fs');
     this.babel = require("babel-core");
     this.find = require('fs-finder');
@@ -57,7 +59,9 @@ class Watcher{
     this.thispath = this.fs.realpathSync(this.settings.source_path);
     console.log('THIS PATH: ',this.thispath);
     for(let f of this.settings.babel){
-      this.babelFile(f);
+      if(this.settings.initial_run){
+        this.babelFile(f);
+      }
       this.watchFile(f,this.babelFile);
     }
     for(let f of this.settings.copy){
@@ -67,7 +71,9 @@ class Watcher{
           file=file.replace(this.thispath,'').replace('/\//g','\\');
           file = file[0]==='\\' ? file.slice(1) : file;
           console.log('SET COPY FOR: ',file);
-          this.copyFile(file);
+          if(this.settings.initial_run){
+            this.copyFile(file);
+          }
           this.watchFile(file,this.copyFile);
         }
       })

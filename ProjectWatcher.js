@@ -15,32 +15,32 @@ var fs = require("fs");
 var watcher = require('./watcher.js');
 
 var DEFAULT = {
-  settings : function(){
-    return {
+  settings : {
       module_path : null,
       source_path : '.',
-      destination_path : '_PRODUCED',
+      destination_path : '_PRODUCED/',
       babel : [],
       babel_options : {},
-      copy : ["*"],
-      options_file:'project-watcher-options.json'
+      copy : [],
+      options_file:'project-watcher-options.json',
+      initial_run:true
     }
-  }
 }
+var w = null;
+// var settings = null;
+var settings = DEFAULT.settings;
 //checking args
 var args = require('./ArgsParser.js');
 if(args.O || args.options){
-  DEFAULT.options_file = args.O || args.options;
+  settings.options_file = args.O || args.options || DEFAULT.settings.options_file;
 }
 //checking args END
-var w = null;
 function start(){
   try{
     w.clear();
   }catch(e){}
-  var settings = DEFAULT.settings();
   try{
-    let options = JSON.parse(fs.readFileSync(DEFAULT.options_file));
+    let options = JSON.parse(fs.readFileSync(settings.options_file));
     for(let opt in options){
       settings[opt] = options[opt];
     }
@@ -50,6 +50,6 @@ function start(){
   w = new watcher.Watcher(settings);
 }
 start();
-fs.watchFile(DEFAULT.options_file,(curr,prev)=>{
+fs.watchFile(settings.options_file,(curr,prev)=>{
   start();
 })

@@ -1,3 +1,10 @@
+#Package Files
+node-modules
+project-watcher-options.json
+.babelrc
+_PRODUCED
+node_modules
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
