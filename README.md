@@ -10,7 +10,7 @@
 #### ES6
 Tested on Node.js v5.3.0
 
-### Options
+### Project options
 You can provide custom settings in json file.
 The defaults are:
 ```javascript
@@ -25,3 +25,8 @@ The defaults are:
   initial_run:true
 }
 ```
+### ProjectWatcher arguments
+`-O file.json` or `--options file.json` points the project options file
+
+### Run
+`node ProjectWatcher.js [arguments]`
