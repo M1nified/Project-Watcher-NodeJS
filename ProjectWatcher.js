@@ -21,6 +21,7 @@ var DEFAULT = {
       destination_path : '_PRODUCED/',
       babel : [],
       babel_options : {},
+      babel_uglify:false,
       copy : [],
       options_file:'project-watcher-options.json',
       initial_run:true

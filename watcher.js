@@ -70,6 +70,16 @@ class Watcher{
     })
     return promise;
   }
+  uglifyConditioned(stringofcode){
+    if(this.settings.babel_uglify){
+      console.log('uglify');
+      let result = this.UglifyJS.minify(stringofcode,{
+        fromString:true
+      });
+      return result.code;
+    }
+    return stringofcode;
+  }
   babelFile(f){
     this.logDate();
     f = this.path.normalize(f);
@@ -82,7 +92,8 @@ class Watcher{
         this.notifyErr(err);
       }else{
         this.ensureThePath(target).then(()=>{
-          this.fs.writeFile(target,result.code,{flag:'w+'},(err)=>{if(err)console.log(err);this.notifyErr(err);})
+          let code = this.uglifyConditioned(result.code);
+          this.fs.writeFile(target,code,{flag:'w+'},(err)=>{if(err)console.log(err);this.notifyErr(err);})
         })
       }
     }.bind(this));
@@ -117,6 +128,7 @@ class Watcher{
     this.find = require('fs-finder');
     this.notifier = require('node-notifier');
     this.path = require('path');
+    this.UglifyJS = require("uglify-js");
     this.initial_path = this.path.normalize(this.fs.realpathSync(this.settings.source_path));
     console.log('THIS PATH: ',this.initial_path);
     for(let f of this.settings.babel){
