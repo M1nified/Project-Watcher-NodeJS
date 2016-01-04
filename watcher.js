@@ -133,7 +133,7 @@ class Watcher{
     console.log('THIS PATH: ',this.initial_path);
     for(let f of this.settings.babel){
       f = this.path.normalize(f);
-      console.log('EXP: ',f);
+      // console.log('EXP: ',f);
       this.find.from('.').exclude(['node_modules']).findFiles(f,(files)=>{
         // console.log('FILES: ',files);
         for(let file of files){

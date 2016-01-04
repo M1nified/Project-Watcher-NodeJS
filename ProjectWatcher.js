@@ -13,6 +13,7 @@ console.log("    |___|                                                       ");
 console.log("");
 var fs = require("fs");
 var watcher = require('./watcher.js');
+var ArgsParser = require('./ArgsParser.js');
 
 var DEFAULT = {
   settings : {
@@ -31,10 +32,8 @@ var w = null;
 // var settings = null;
 var settings = DEFAULT.settings;
 //checking args
-var args = require('./ArgsParser.js');
-if(args.O || args.options){
-  settings.options_file = args.O || args.options || DEFAULT.settings.options_file;
-}
+var args = ArgsParser.args;
+settings.options_file = args.O || args.options || DEFAULT.settings.options_file;
 //checking args END
 function start(){
   try{

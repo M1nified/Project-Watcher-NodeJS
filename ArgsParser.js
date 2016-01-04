@@ -1,5 +1,5 @@
 'use strict';
-exports.ArgsParser = (function(){
+exports.args = (function(){
   var args = {
 
   }
