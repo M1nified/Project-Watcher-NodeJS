@@ -82,9 +82,10 @@ class Watcher{
   }
   babelFile(f){
     this.logDate();
-    f = this.path.normalize(f);
-    let target = this.path.normalize(this.settings.destination_path+f);
-    console.log('DID BABEL: ',f);
+    f = this.path.relative(this.settings.source_path,f);
+    let source = this.path.normalize(this.path.join(this.settings.source_path,f));
+    let target = this.path.normalize(this.path.join(this.settings.destination_path,f));
+    console.log('DID BABEL: ',source,'TO',target);
     this.babel.transformFile(f, this.settings.babel_options, function (err, result) {
       // result; // => { code, map, ast }
       if(err){
@@ -100,10 +101,12 @@ class Watcher{
   }
   copyFile(f){
     this.logDate();
-    f = this.path.normalize(f);
-    let target = this.path.normalize(this.settings.destination_path+f);
-    console.log('DID COPY: ',f);
-    this.fs.readFile(f,(err,data)=>{
+    f = this.path.relative(this.settings.source_path,f);
+    let source = this.path.normalize(this.path.join(this.settings.source_path,f));
+    let target = this.path.normalize(this.path.join(this.settings.destination_path,f));
+    console.log('DID COPY: ',source,'TO',target);
+    this.fs.readFile(source,'utf8',(err,data)=>{
+      console.log(data);
       this.ensureThePath(target).then(()=>{
         this.fs.writeFile(target,data,{flag:'w+'},(err)=>{if(err){console.log(err);((err)=>{this.notifyErr(err);})(err);}})
       })
@@ -129,15 +132,15 @@ class Watcher{
     this.notifier = require('node-notifier');
     this.path = require('path');
     this.UglifyJS = require("uglify-js");
-    this.initial_path = this.path.normalize(this.fs.realpathSync(this.settings.source_path));
-    console.log('THIS PATH: ',this.initial_path);
+    this.initial_path = this.path.normalize(this.fs.realpathSync("."));
+    // this.initial_path = this.path.normalize(this.fs.realpathSync(this.settings.source_path));
+    console.log('THIS PATH: ',this.initial_path,'\n');
     for(let f of this.settings.babel){
       f = this.path.normalize(f);
       // console.log('EXP: ',f);
-      this.find.from('.').exclude(['node_modules']).findFiles(f,(files)=>{
+      this.find.from(this.settings.source_path).exclude(['node_modules']).findFiles(f,(files)=>{
         // console.log('FILES: ',files);
         for(let file of files){
-          file= this.path.relative(this.settings.source_path,file);
           console.log('SET BABEL FOR: ',file);
           if(this.settings.initial_run){
             this.babelFile(file);
@@ -148,10 +151,9 @@ class Watcher{
     }
     for(let f of this.settings.copy){
       f = this.path.normalize(f);
-      this.find.from('.').exclude(['node_modules']).findFiles(f,(files)=>{
+      this.find.from(this.settings.source_path).exclude(['node_modules']).findFiles(f,(files)=>{
         // console.log(files);
         for(let file of files){
-          file= this.path.relative(this.settings.source_path,file);
           console.log('SET COPY FOR: ',file);
           if(this.settings.initial_run){
             this.copyFile(file);
