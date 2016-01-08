@@ -86,7 +86,7 @@ class Watcher{
     let source = this.path.normalize(this.path.join(this.settings.source_path,f));
     let target = this.path.normalize(this.path.join(this.settings.destination_path,f));
     console.log('DID BABEL: ',source,'TO',target);
-    this.babel.transformFile(f, this.settings.babel_options, function (err, result) {
+    this.babel.transformFile(source, this.settings.babel_options, function (err, result) {
       // result; // => { code, map, ast }
       if(err){
         console.log('\n',err,'\n');
