@@ -105,11 +105,13 @@ class Watcher{
     let source = this.path.normalize(this.path.join(this.settings.source_path,f));
     let target = this.path.normalize(this.path.join(this.settings.destination_path,f));
     console.log('DID COPY: ',source,'TO',target);
-    this.fs.readFile(source,'utf8',(err,data)=>{
-      this.ensureThePath(target).then(()=>{
-        this.fs.writeFile(target,data,{flag:'w+'},(err)=>{if(err){console.log(err);((err)=>{this.notifyErr(err);})(err);}})
-      })
-    })
+    // this.fs.writeFileSync(target, fs.readFileSync(source));
+    this.fs.createReadStream(source).pipe(this.fs.createWriteStream(target));
+    // this.fs.readFile(source,'utf8',(err,data)=>{
+    //   this.ensureThePath(target).then(()=>{
+    //     this.fs.writeFile(target,data,{flag:'w+'},(err)=>{if(err){console.log(err);((err)=>{this.notifyErr(err);})(err);}})
+    //   })
+    // })
   }
   watchFile(f,actionForFile){
     f = this.path.normalize(f);
